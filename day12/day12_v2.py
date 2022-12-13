@@ -40,13 +40,6 @@ class Node:
         self.parent_node = parent_node
         self.distance_to_end = 0
 
-    def check_up(self, Maze):
-        if self.y_corr - 1 >= 0:
-            pass
-            if Maze.heightmap[self.y_corr][self.x_corr]
-        else:
-            return None
-
     def add_distance_to_end(self):
         self.distance_to_end += 1
         if self.parent_node != None:
@@ -55,6 +48,9 @@ class Node:
 def find_path(node, maze, node_list):
     x_corr = node.x_corr
     y_corr = node.y_corr
+    if maze.E == [x_corr, y_corr]:
+        node.add_distance_to_end() # - TODO HERE
+        return
     # check up
     if (y_corr - 1 >= 0):   # do upper cell exist?
         next_height = maze.heightmap[y_corr - 1][x_corr]
