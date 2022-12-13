@@ -1,10 +1,3 @@
-name = "jem"
+jem = [['S', 'a', 'b', 'q', 'p', 'o', 'n', 'm'], ['a', 'b', 'c', 'r', 'y', 'x', 'x', 'l'], ['a', 'c', 'c', 's', 'z', 'E', 'x', 'k'], ['a', 'c', 'c', 't', 'u', 'v', 'w', 'j'], ['a', 'b', 'd', 'e', 'f', 'g', 'h', 'i']]
 
-char_name = [ch + "t" for ch in "axis"]
-
-print(char_name)
-#print(type(char_name[0]))
-#val = ord(char_name[0][0]) - ord("a")
-#print("ord(a): ", ord("a"))
-#print("chr(0): ", chr(1))
-#print(val)
+for i in j in jem:
