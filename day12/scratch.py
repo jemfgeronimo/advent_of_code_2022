@@ -1,3 +1,7 @@
-jem = [['S', 'a', 'b', 'q', 'p', 'o', 'n', 'm'], ['a', 'b', 'c', 'r', 'y', 'x', 'x', 'l'], ['a', 'c', 'c', 's', 'z', 'E', 'x', 'k'], ['a', 'c', 'c', 't', 'u', 'v', 'w', 'j'], ['a', 'b', 'd', 'e', 'f', 'g', 'h', 'i']]
+jem = [17, 23, 45]
 
-for i in j in jem:
+print("before: ", jem)
+def change_array(array):
+    array[0] = 0
+change_array(jem)
+print("after: ", jem)

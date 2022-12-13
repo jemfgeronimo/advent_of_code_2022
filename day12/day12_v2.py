@@ -26,6 +26,7 @@ class Node:
         self.x_corr = x_corr
         self.y_corr = y_corr
         self.parent_node = parent_node
+        self.distance_to_end = 0
 
     def check_up(self, Maze):
         if self.y_corr - 1 >= 0:
@@ -33,6 +34,13 @@ class Node:
             if Maze.array[self.y_corr][self.x_corr]
         else:
             return None
+
+    def add_distance(self):
+        self.distance_to_end += 1
+        if self.parent_node != None:
+            self.parent_node.add_distance()
+
+def findPath()
 
 if SAMPLE_INPUT_ON:
     f = open("sample.txt", "r")
@@ -57,5 +65,12 @@ maze.setS()
 maze.setE()
 print("maze.S[0]: ", maze.S[0], " maze.S[1]: ", maze.S[1])
 #print("maze.S: ", maze.S, " maze.E: ", maze.E)
+
+# initialize start node
 start_node = Node(maze.S[0], maze.S[1])
-#while
+# looping all possible paths
+# for all up directions
+# for all right directions
+# for all down directions
+# for all left directions
+# 
