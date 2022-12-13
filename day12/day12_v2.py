@@ -45,12 +45,12 @@ class Node:
         if self.parent_node != None:
             self.parent_node.add_distance_to_end()
 
-def find_path(node, maze, node_list):
+def find_end(node, maze, node_list):
     x_corr = node.x_corr
     y_corr = node.y_corr
     if maze.E == [x_corr, y_corr]:
-        node.add_distance_to_end() # - TODO HERE
-        return
+        node.add_distance_to_end()
+        return 0
     # check up
     if (y_corr - 1 >= 0):   # do upper cell exist?
         next_height = maze.heightmap[y_corr - 1][x_corr]
@@ -58,8 +58,8 @@ def find_path(node, maze, node_list):
         if next_height >= node.height + 1:  # if eligible
             # create node + find path
             new_node = Node(next_height, x_corr, y_corr - 1, node)
-            find_path(new_node, maze)
-            node_list.append(new_node)
+            if find_end(new_node, maze) == 0:
+                node_list.append(new_node)
     # check right
     if (x_corr + 1 < maze.no_cols):   # do right cell exist?
         next_height = maze.heightmap[y_corr][x_corr + 1]
@@ -67,8 +67,8 @@ def find_path(node, maze, node_list):
         if next_height >= node.height + 1:  # if eligible
             # create node + find path
             new_node = Node(next_height, x_corr + 1, y_corr, node)
-            find_path(new_node, maze)
-            node_list.append(new_node)
+            if find_end(new_node, maze) == 0:
+                node_list.append(new_node)
     # check down
     if (y_corr + 1 < maze.no_rows):   # do lower cell exist?
         next_height = maze.heightmap[y_corr + 1][x_corr]
@@ -76,8 +76,8 @@ def find_path(node, maze, node_list):
         if next_height >= node.height + 1:  # if eligible
             # create node + find path
             new_node = Node(next_height, x_corr, y_corr + 1, node)
-            find_path(new_node, maze)
-            node_list.append(new_node)
+            if find_end(new_node, maze) == 0:
+                node_list.append(new_node)
     # check left
     if (x_corr - 1 >= 0 ):   # do left cell exist?
         next_height = maze.heightmap[y_corr][x_corr - 1]
@@ -85,9 +85,10 @@ def find_path(node, maze, node_list):
         if next_height >= node.height + 1:  # if eligible
             # create node + find path
             new_node = Node(next_height, x_corr - 1, y_corr, node)
-            find_path(new_node, maze)
-            node_list.append(new_node)
-    # u r here
+            if find_end(new_node, maze) == 0:
+                node_list.append(new_node)
+    # no path
+    return 1
 
 if SAMPLE_INPUT_ON:
     f = open("sample.txt", "r")
