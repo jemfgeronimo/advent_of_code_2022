@@ -5,9 +5,9 @@ else:
     f = open("input.txt", "r")
 
 rockmap = []
-for i in range(600)
-    
-    rockmap.append([])
+#for i in range(600)
+#    
+#    rockmap.append([])
 for line in f:
     line = line.strip().split()
     #print(line)
