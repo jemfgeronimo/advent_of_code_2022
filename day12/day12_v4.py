@@ -5,21 +5,20 @@ else:
     f = open("input.txt", "r")
 
 class Node:
-    def __init__(self, x_corr, y_corr, parent_node = None):
+    def __init__(self, x_corr, y_corr, lvl, parent_node = None):
         self.x_corr = x_corr
-        
+        self.y_corr = y_corr
+        self.parent_node = parent_node
+        self.lvl = lvl
 
-
+# create height map (hmap)        
 hmap = []
 for line in f:
     hmap.append([ord(ch) for ch in line.strip()])
-    #print(line)
-
     for i in hmap[-1]:
         if i == ord("S"):
             S_xcorr = hmap[-1].index(i)
             S_ycorr = len(hmap) - 1
-            #print(S_xcorr, S_ycorr)
             hmap[S_ycorr][S_xcorr] = ord("a")
         elif i == ord("E"):
             E_xcorr = hmap[-1].index(i)
@@ -29,10 +28,6 @@ f.close()
 
 #for i in hmap:
 #    print(i)
-class Cell:
-    def __init__(self, x_corr, y_corr):
-        self.x_corr = x_corr
-        self.y_corr = y_corr
 
 # get S and E coordinates
 #print("S: ", S_xcorr, S_ycorr)
@@ -41,12 +36,11 @@ class Cell:
 NUM_ROWS = len(hmap)
 NUM_COLS = len(hmap[0])
 step = 0
-q1 = [[S_xcorr, S_ycorr]]
+start_node = Node(S_xcorr, S_ycorr, 0)
+q1 = [start_node]
 q2 = []
-q3 = [1]
-q4 = [1]
-curr_corr = [S_xcorr, S_ycorr]
-while([E_xcorr, E_ycorr] not in q1):
+
+while(curr_node not in q1):
 #for i in range(5):
     q2.append(q1.pop(0))
     curr_corr = q2[-1]
