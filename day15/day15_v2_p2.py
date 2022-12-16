@@ -18,8 +18,8 @@ def noBeaconZone(sensor: tuple, beacon: tuple, y, no_beacon_zone):
     (beacon_x, beacon_y) = beacon
     x1 = sensor_x - (abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y) - abs(sensor_y - y))
     x2 = sensor_x + (abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y) - abs(sensor_y - y))
-    xmax = max(x1,x2)
-    xmin = min(x1,x2)
+    xmax = max(x1,x2,0)
+    xmin = max(min(x1,x2),0)
     zone = set()
     for i in range(xmin, xmax+1):
         coor = (i, y)
@@ -52,16 +52,16 @@ f.close()
 
 no_beacon_zone = set()
 if SAMPLE_INPUT_ON == 1:
-    min_range = -20
+    min_range = 0
     max_range = 20
 else:
     min_range = 0
     max_range = 4000000
-beacon_zone = set()
+valid_zone = set()
 for i in range(min_range, max_range + 1):
     for j in range(min_range, max_range + 1):
         print((i,j))
-        beacon_zone.add((i,j))
+        valid_zone.add((i,j))
 for y in range(min_range, max_range + 1):
     print("y: ", y)
     for sensor in sensors:
@@ -77,11 +77,11 @@ for y in range(min_range, max_range + 1):
 # remove all existing beacons
 print(len(no_beacon_zone))
 print(len(beacons))
+#no_beacon_zone = no_beacon_zone.intersection(valid_zone)
 no_beacon_zone = no_beacon_zone.difference(beacons)
 #print(no_beacon_zone)
 # reveal beacon zone
-print("here",len(beacon_zone))
-beacon_zone = beacon_zone.difference(no_beacon_zone)
+beacon_zone = valid_zone.difference(no_beacon_zone)
 beacon_zone = beacon_zone.difference(beacons)
 print(beacon_zone)
 
