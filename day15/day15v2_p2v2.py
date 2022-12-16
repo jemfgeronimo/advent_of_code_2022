@@ -1,30 +1,26 @@
 import os
 import math
 os.system("cls")
-SAMPLE_INPUT_ON = 1 # if 1, code is for SAMPLE_INPUT_ON, else, final
+SAMPLE_INPUT_ON = 0 # if 1, code is for SAMPLE_INPUT_ON, else, final
 if SAMPLE_INPUT_ON:
     f = open("sample.txt", "r")
 else:
     f = open("input.txt", "r")
-
-# not used
-def computeManhattanDistance(sensor, beacon):
-    return abs(sensor[0] - beacon[0]) + abs(sensor[1] - beacon[1])
-def noBeaconsAllowed(sensor, beacon, point):
-    return computeManhattanDistance(sensor, point) < computeManhattanDistance(sensor, beacon)
-
 def noBeaconZone(sensor: tuple, beacon: tuple, y, no_beacon_zone, max_range):
     (sensor_x, sensor_y) = sensor
     (beacon_x, beacon_y) = beacon
+    if (abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y) - abs(sensor_y - y)) < 0:
+        return set()
     x1 = sensor_x - (abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y) - abs(sensor_y - y))
     x2 = sensor_x + (abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y) - abs(sensor_y - y))
-    xmax = min(max(x1,x2,0), max_range)
+    xmax = min(max(x1,x2,0),max_range)
     xmin = max(min(x1,x2),0)
     zone = set()
     for i in range(xmin, xmax+1):
         coor = (i, y)
-        #if coor == (14,11):
-        #    return (14,11)
+        if coor == (14,11):
+            #print("it is sensor =", sensor, "with beacon: ", beacon)
+            pass
         if coor not in no_beacon_zone:
             zone.add(coor)
     return zone
@@ -51,38 +47,32 @@ f.close()
 #print(type(beacons[0]))
 
 if SAMPLE_INPUT_ON == 1:
-    min_range = 0
+    #y = 10
     max_range = 20
 else:
-    min_range = 0
+    #y = 2000000
     max_range = 4000000
-valid_zone = set()
-for i in range(min_range, max_range + 1):
-    for j in range(min_range, max_range + 1):
-        print((i,j))
-        valid_zone.add((i,j))
 no_beacon_zone = set()
-#for y in range(min_range, max_range + 1):
-for y in range(10,10):
-    print("y: ", y)
+for y in range(0, max_range+1):
+#for y in range(9,10):
     for sensor in sensors:
         # create no beacon zone per beacon
-        print("sensor: ", sensor)
         zone = noBeaconZone(sensor, beacons[sensors.index(sensor)], y, no_beacon_zone, max_range)
-    #    if zone == (14,11):
-    #        break
-        print("zone: ", zone)
         no_beacon_zone = no_beacon_zone.union(zone)
-    #if zone == (14,11):
-    #    break
+        print("y:", y, "sensor:", sensor)
 # remove all existing beacons
-no_beacon_zone = no_beacon_zone.difference(beacons)
-print(no_beacon_zone)
-print("size of valid zone: ", len(valid_zone))
-print("len of no beacon zone: ", len(no_beacon_zone))
-# reveal beacon zone
-beacon_zone = valid_zone.difference(no_beacon_zone)
-#beacon_zone = beacon_zone.difference(beacons)
-print(beacon_zone)
+no_beacon_zone = no_beacon_zone.union(beacons).union(sensors)
+#print("no beacon zone: ", no_beacon_zone)
+# count elements in set
+#no_beacon_spots = len(no_beacon_zone)
+#print("no beacon spots: ", no_beacon_spots)
 
-# 
+valid_zone = set()
+for i in range(max_range + 1):
+    for j in range(max_range + 1):
+        valid_zone.add((i,j))
+print("len of valid zone: ", len(valid_zone))
+
+beacon_zone = valid_zone.difference(no_beacon_zone)
+print("len of beacon zone: ", len(beacon_zone))
+print("beacon zone: ", beacon_zone)
