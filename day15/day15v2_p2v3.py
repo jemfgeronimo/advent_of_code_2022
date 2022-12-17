@@ -11,7 +11,7 @@ def computeManhattanDistance(sensor, beacon):
     return abs(sensor[0] - beacon[0]) + abs(sensor[1] - beacon[1])
 
 def noBeaconZone(sensor: tuple, beacon: tuple, y, no_beacon_zone, max_range):
-    (sensor_x, sensor_y) = sensor
+    (sensor_x, sensor_y, manhattan_distance) = sensor
     (beacon_x, beacon_y) = beacon
     if (abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y) - abs(sensor_y - y)) < 0:
         return set()
@@ -27,9 +27,32 @@ def noBeaconZone(sensor: tuple, beacon: tuple, y, no_beacon_zone, max_range):
         zone.add(coor)
     return zone
 
+def createNoBeaconZone(sensor, no_beacon_zone):
+    (sensor_x, sensor_y, manhattan_distance) = sensor
+    top_range = sensor_y - manhattan_distance
+    bot_range = sensor_y + manhattan_distance
+    left_range = sensor_x
+    right_range = sensor_x
+    zone = set()
+    for i in range(top_range, bot_range + 1):
+        #print("i:", i)
+        for j in range(left_range, right_range + 1):
+            #print("j:", j)
+            print("i:", i, "j:", j)
+            if (j,i) not in no_beacon_zone:
+                zone.add((j,i))
+        if i < sensor_y:
+            left_range -= 1
+            right_range += 1
+        else:
+            left_range += 1
+            right_range -= 1
+    return zone
 
+# create list of sensors and beacons with manhattan distance
 sensors = []
 beacons = []
+sensor_manhattans = []
 for line in f:
     # convert string line to list of 4 integers [sensor_x, sensor_y, beacon_x, beacon_y]
     line = line.strip().split()
@@ -37,8 +60,10 @@ for line in f:
     [sensor_x, sensor_y, beacon_x, beacon_y] = [int(str[2:]) for str in line]
     sensor = (sensor_x, sensor_y)
     beacon = (beacon_x, beacon_y)
+    sensor_manhattan = (sensor_x, sensor_y, computeManhattanDistance(sensor, beacon))
     sensors.append(sensor)
     beacons.append(beacon)
+    sensor_manhattans.append(sensor_manhattan)
 f.close()
 
 #print(sensors)
@@ -48,42 +73,42 @@ f.close()
 #print(type(beacons))
 #print(type(beacons[0]))
 
+#print("sensors: ", sensors)
+# sort beacon list based on coordinates
+#def coordinateValue(coor):
+#    return coor[0] + coor[1]*10
+#sensors.sort(key=coordinateValue)
+#print("sensors: ", sensors)
+
+# create no beacon zone without restriction
+no_beacon_zone = set()
+for sensor_manhattan in sensor_manhattans:
+    print("sensor: ", sensor_manhattan)
+    zone = createNoBeaconZone(sensor_manhattan, no_beacon_zone)
+    no_beacon_zone = no_beacon_zone.union(zone)
+
+# create valid zone
 if SAMPLE_INPUT_ON == 1:
     #y = 10
     max_range = 20
 else:
     #y = 2000000
     max_range = 4000000
-
-no_beacon_zone = set()
-for sensor in sensors:
-    beacon = beacons[sensors.index(sensor)]
-    sensor_y = sensor[1]
-    beacon_y = beacon[1]
-    diff_y = computeManhattanDistance(sensor, beacon)
-    from_y = sensor_y - diff_y
-    to_y = sensor_y + diff_y
-    from_y = max(from_y, 0)
-    to_y = min(to_y, max_range)
-    #print("sensor:", sensor)
-    for y in range(from_y, to_y + 1):
-        zone = noBeaconZone(sensor, beacon, y, no_beacon_zone, max_range)
-        no_beacon_zone = no_beacon_zone.union(zone)
-        print("sensor:", sensor, "y:", y)
-        pass
-# remove all existing beacons
-no_beacon_zone = no_beacon_zone.union(beacons).union(sensors)
-#print("no beacon zone: ", no_beacon_zone)
-# count elements in set
-#no_beacon_spots = len(no_beacon_zone)
-#print("no beacon spots: ", no_beacon_spots)
-
 valid_zone = set()
 for i in range(max_range + 1):
     for j in range(max_range + 1):
         valid_zone.add((i,j))
-print("len of valid zone: ", len(valid_zone))
+#print("len of valid zone: ", len(valid_zone))
 
+# create no beacon zone with restriction
+no_beacon_zone = no_beacon_zone.intersection(valid_zone)
+
+# show beacon zone
 beacon_zone = valid_zone.difference(no_beacon_zone)
 print("len of beacon zone: ", len(beacon_zone))
 print("beacon zone: ", beacon_zone)
+
+# tuning freq
+beacon_coor = list(beacon_zone)[0]
+tuning_freq = beacon_coor[0] * 4000000 + beacon_coor[1]
+print("tuning freq:", tuning_freq)
