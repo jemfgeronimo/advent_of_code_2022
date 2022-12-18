@@ -63,7 +63,7 @@ def isInSensor_sBeaconZone(coor, sensor_manhattan):
     lower_left_line = (bot_range - sensor_y) * (coor_x - sensor_x) / (sensor_y - left_range)
     upper_left_line = (top_range - sensor_y) * (coor_x - sensor_x) / (sensor_x - left_range)
 
-    if coor_y <= upper_right_line and coor_y <= lower_right_line and coor_y >= lower_left_line and coor_y >= upper_left_line:
+    if coor_y <= upper_right_line and coor_y >= lower_right_line and coor_y >= lower_left_line and coor_y <= upper_left_line:
         return True
     return False
 
