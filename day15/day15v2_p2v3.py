@@ -49,6 +49,24 @@ def createNoBeaconZone(sensor, no_beacon_zone):
             right_range -= 1
     return zone
 
+def isInSensor_sBeaconZone(coor, sensor_manhattan):
+    (sensor_x, sensor_y, manhattan_distance) = sensor_manhattan
+    (coor_x, coor_y) = coor
+
+    top_range = sensor_y - manhattan_distance
+    bot_range = sensor_y + manhattan_distance
+    left_range = sensor_x - manhattan_distance
+    right_range = sensor_x + manhattan_distance
+
+    upper_right_line = (sensor_y - top_range) * (coor_x - right_range) / (right_range - sensor_x)
+    lower_right_line = (sensor_y - bot_range) * (coor_x - right_range) / (right_range - sensor_x)
+    lower_left_line = (bot_range - sensor_y) * (coor_x - sensor_x) / (sensor_y - left_range)
+    upper_left_line = (top_range - sensor_y) * (coor_x - sensor_x) / (sensor_x - left_range)
+
+    if coor_y <= upper_right_line and coor_y <= lower_right_line and coor_y >= lower_left_line and coor_y >= upper_left_line:
+        return True
+    return False
+
 # create list of sensors and beacons with manhattan distance
 sensors = []
 beacons = []
@@ -80,35 +98,32 @@ f.close()
 #sensors.sort(key=coordinateValue)
 #print("sensors: ", sensors)
 
-# create no beacon zone without restriction
-no_beacon_zone = set()
-for sensor_manhattan in sensor_manhattans:
-    print("sensor: ", sensor_manhattan)
-    zone = createNoBeaconZone(sensor_manhattan, no_beacon_zone)
-    no_beacon_zone = no_beacon_zone.union(zone)
-
-# create valid zone
 if SAMPLE_INPUT_ON == 1:
     #y = 10
     max_range = 20
 else:
     #y = 2000000
     max_range = 4000000
-valid_zone = set()
+no_beacon_zone = set()
+found_beacon = False
 for i in range(max_range + 1):
     for j in range(max_range + 1):
-        valid_zone.add((i,j))
-#print("len of valid zone: ", len(valid_zone))
+        for sensor_manhattan in sensor_manhattans:
+            if isInSensor_sBeaconZone((j, i), sensor_manhattan):
+                no_beacon_zone.add((j,i))
+                break
+        else:
+            found_beacon = True
+            beacon_coor = (j,i)
+        if found_beacon == True:
+            break
+    if found_beacon == True:
+        break
 
-# create no beacon zone with restriction
-no_beacon_zone = no_beacon_zone.intersection(valid_zone)
 
-# show beacon zone
-beacon_zone = valid_zone.difference(no_beacon_zone)
-print("len of beacon zone: ", len(beacon_zone))
-print("beacon zone: ", beacon_zone)
+
 
 # tuning freq
-beacon_coor = list(beacon_zone)[0]
+print("beacon found:", beacon_coor)
 tuning_freq = beacon_coor[0] * 4000000 + beacon_coor[1]
 print("tuning freq:", tuning_freq)
