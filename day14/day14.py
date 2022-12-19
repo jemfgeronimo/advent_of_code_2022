@@ -4,18 +4,10 @@ if SAMPLE_INPUT_ON:
 else:
     f = open("input.txt", "r")
 
-<<<<<<< HEAD
-# extract size of rockmap
-# + parse input to a list of lists of tuples
-input = []
-max_rows = 0
-max_cols = 0
-=======
 rockmap = []
 #for i in range(600)
 #    
 #    rockmap.append([])
->>>>>>> 894de2dc25e5a5393a9cb06ef9a38b66b465a3cb
 for line in f:
     line = line.strip().split() # list of string in form ["498,4", "->", ]    
     while "->" in line: # remove "->"
