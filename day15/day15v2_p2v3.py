@@ -1,7 +1,7 @@
 import os
 import math
 os.system("cls")
-SAMPLE_INPUT_ON = 0 # if 1, code is for SAMPLE_INPUT_ON, else, final
+SAMPLE_INPUT_ON = 1 # if 1, code is for SAMPLE_INPUT_ON, else, final
 if SAMPLE_INPUT_ON:
     f = open("sample.txt", "r")
 else:
@@ -49,21 +49,26 @@ def createNoBeaconZone(sensor, no_beacon_zone):
             right_range -= 1
     return zone
 
-def isInSensor_sBeaconZone(coor, sensor_manhattan):
+def isInSensor_sBeaconZone(coor: tuple, sensor_manhattan):
     (sensor_x, sensor_y, manhattan_distance) = sensor_manhattan
     (coor_x, coor_y) = coor
+    print(coor)
 
     top_range = sensor_y - manhattan_distance
     bot_range = sensor_y + manhattan_distance
     left_range = sensor_x - manhattan_distance
     right_range = sensor_x + manhattan_distance
 
-    upper_right_line = (sensor_y - top_range) * (coor_x - right_range) / (right_range - sensor_x)
-    lower_right_line = (sensor_y - bot_range) * (coor_x - right_range) / (right_range - sensor_x)
-    lower_left_line = (bot_range - sensor_y) * (coor_x - sensor_x) / (sensor_y - left_range)
-    upper_left_line = (top_range - sensor_y) * (coor_x - sensor_x) / (sensor_x - left_range)
+    upper_right_line = (sensor_y - top_range) * (coor_x - right_range) / (right_range - sensor_x) + sensor_y    
+    print(upper_right_line)
+    lower_right_line = (sensor_y - bot_range) * (coor_x - right_range) / (right_range - sensor_x) + sensor_y
+    print(lower_right_line)
+    lower_left_line = (bot_range - sensor_y) * (coor_x - sensor_x) / (sensor_y - left_range) + bot_range
+    print(lower_left_line)
+    upper_left_line = (top_range - sensor_y) * (coor_x - sensor_x) / (sensor_x - left_range) + bot_range
+    print(upper_left_line)
 
-    if coor_y <= upper_right_line and coor_y >= lower_right_line and coor_y >= lower_left_line and coor_y <= upper_left_line:
+    if coor_y >= upper_right_line and coor_y <= lower_right_line and coor_y <= lower_left_line and coor_y >= upper_left_line:
         return True
     return False
 
@@ -109,7 +114,9 @@ found_beacon = False
 for i in range(max_range + 1):
     for j in range(max_range + 1):
         for sensor_manhattan in sensor_manhattans:
+            print(sensor_manhattan)
             if isInSensor_sBeaconZone((j, i), sensor_manhattan):
+                print("add here")
                 no_beacon_zone.add((j,i))
                 break
         else:
@@ -121,9 +128,10 @@ for i in range(max_range + 1):
         break
 
 
-
+print("no beacone zone:", no_beacon_zone)
 
 # tuning freq
 print("beacon found:", beacon_coor)
 tuning_freq = beacon_coor[0] * 4000000 + beacon_coor[1]
 print("tuning freq:", tuning_freq)
+
